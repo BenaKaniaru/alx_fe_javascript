@@ -16,7 +16,8 @@ let quotes = [{
     }
   ];
 
-addButton.addEventListener('click', () => {
+
+function createAddQuoteForm (){
   let newQuote = quoteInput.value;
   let quoteCategory = categoryInput.value;
 
@@ -32,7 +33,9 @@ addButton.addEventListener('click', () => {
   } else {
     alert ('Please input both fields!')
   }
-});
+}
+
+addButton.addEventListener('click', createAddQuoteForm);
 
 function showRandomQuote() {
   let randomIndex = Math.floor(Math.random() * quotes.length);
