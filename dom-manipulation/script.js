@@ -38,11 +38,18 @@ function createAddQuoteForm (){
 addButton.addEventListener('click', createAddQuoteForm);
 
 function showRandomQuote() {
+  quoteDisplay.innerHTML =''
+
   let randomIndex = Math.floor(Math.random() * quotes.length);
   const generatedQuote = quotes[randomIndex];
 
-  quoteDisplay.innerHTML = `"${generatedQuote.text}" - <em>${generatedQuote.category}</em>`;
+  const displayedQuote = document.createElement('span');
+
+  displayedQuote.innerHTML= `"${generatedQuote.text}" - <em>${generatedQuote.category}</em>`;
+
+  quoteDisplay.appendChild(displayedQuote);
 }
+
 
 showQuote.addEventListener('click', showRandomQuote)
 
