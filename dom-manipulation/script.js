@@ -5,13 +5,13 @@ const showQuote = document.getElementById('newQuote');
 const quoteDisplay = document.getElementById('quoteDisplay');
 
 let quotes = [{ 
-      quote: "The only limit to our realization of tomorrow is our doubts of today.", 
+      text: "The only limit to our realization of tomorrow is our doubts of today.", 
       category: "Motivation" 
     }, { 
-      quote: "Life is 10% what happens to us and 90% how we react to it.",
+      text: "Life is 10% what happens to us and 90% how we react to it.",
       category: "Life" 
     }, { 
-      quote: "Success usually comes to those who are too busy to be looking for it.", 
+      text: "Success usually comes to those who are too busy to be looking for it.", 
       category: "Success"
     }
   ];
@@ -22,7 +22,7 @@ addButton.addEventListener('click', () => {
 
   if (newQuote && quoteCategory) {
     quotes.push({
-      quote: newQuote,
+      text: newQuote,
       category: quoteCategory
     });
 
@@ -38,7 +38,7 @@ function showRandomQuote() {
   let randomIndex = Math.floor(Math.random() * quotes.length);
   const generatedQuote = quotes[randomIndex];
 
-  quoteDisplay.innerHTML = `"${generatedQuote.quote}" - <em>${generatedQuote.category}</em>`;
+  quoteDisplay.innerHTML = `"${generatedQuote.text}" - <em>${generatedQuote.category}</em>`;
 }
 
 showQuote.addEventListener('click', showRandomQuote)
