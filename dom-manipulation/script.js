@@ -55,5 +55,38 @@ function showRandomQuote() {
 }
 
 
-showQuote.addEventListener('click', showRandomQuote)
+showQuote.addEventListener('click', showRandomQuote);
 
+//function to export quotes as JSON
+function exportQuotesToJSON() {
+  const dataStr = JSON.stringify(quotes, null, 2);
+  const blob = new Blob([dataStr], {type: "application/json"});
+  const url =URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'quotes.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+exportBtn.addEventListener('click', exportQUotesToJson);
+
+// Function to import quotes from JSON file
+
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+
+  fileReader.onload = function(event) {
+    const importedQuotes = JSON.parse(event.target.result);
+    quotes.push(...importedQuotes); // Merge imported quotes with existing ones
+    saveQuotes(); // Save the updated quotes array to localStorage
+    alert('Quotes imported successfully!');
+  };
+  
+  fileReader.readAsText(event.target.files[0]);
+}
+
+// Add event listener to the import file input
+importInput.addEventListener('change', importFromJsonFile);
