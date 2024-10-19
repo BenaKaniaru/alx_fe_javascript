@@ -4,7 +4,7 @@ const addButton = document.getElementById('addQuote');
 const showQuote = document.getElementById('newQuote');
 const quoteDisplay = document.getElementById('quoteDisplay');
 
-let quotes = [{ 
+let quotes = JSON.parse(localStorage.getItem('quotes')) || [{ 
       text: "The only limit to our realization of tomorrow is our doubts of today.", 
       category: "Motivation" 
     }, { 
@@ -18,8 +18,8 @@ let quotes = [{
 
 
 function createAddQuoteForm (){
-  let newQuote = quoteInput.value;
-  let quoteCategory = categoryInput.value;
+  let newQuote = quoteInput.value.trim();
+  let quoteCategory = categoryInput.value.trim();
 
   if (newQuote && quoteCategory) {
     quotes.push({
@@ -32,7 +32,9 @@ function createAddQuoteForm (){
     alert('Quote Added Successfully!')
   } else {
     alert ('Please input both fields!')
-  }
+  };
+
+  localStorage.setItem('quotes', JSON.stringify(quotes));
 }
 
 addButton.addEventListener('click', createAddQuoteForm);
@@ -48,6 +50,8 @@ function showRandomQuote() {
   displayedQuote.innerHTML= `"${generatedQuote.text}" - <em>${generatedQuote.category}</em>`;
 
   quoteDisplay.appendChild(displayedQuote);
+
+  console.log(generatedQuote.text, generatedQuote.category);
 }
 
 
