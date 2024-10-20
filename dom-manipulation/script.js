@@ -29,6 +29,8 @@ function createAddQuoteForm (){
 
     document.getElementById('newQuoteText').value = '' //clears the input field
     document.getElementById('quoteCategory').value = '' // clears the input field;
+
+    populateCategories();
     alert('Quote Added Successfully!')
   } else {
     alert ('Please input both fields!')
@@ -40,18 +42,7 @@ function createAddQuoteForm (){
 addButton.addEventListener('click', createAddQuoteForm);
 
 function showRandomQuote() {
-  quoteDisplay.innerHTML =''
-
-  let randomIndex = Math.floor(Math.random() * quotes.length);
-  const generatedQuote = quotes[randomIndex];
-
-  const displayedQuote = document.createElement('span');
-
-  displayedQuote.innerHTML= `"${generatedQuote.text}" - <em>${generatedQuote.category}</em>`;
-
-  quoteDisplay.appendChild(displayedQuote);
-
-  console.log(generatedQuote.text, generatedQuote.category);
+  filterQuotes();
 }
 
 
@@ -71,7 +62,7 @@ function exportQuotesToJSON() {
   document.body.removeChild(a);
 };
 
-exportBtn.addEventListener('click', exportQUotesToJson);
+document.getElementById('exportJSON').addEventListener('click', exportQuotesToJson);
 
 // Function to import quotes from JSON file
 
@@ -90,3 +81,40 @@ function importFromJsonFile(event) {
 
 // Add event listener to the import file input
 importInput.addEventListener('change', importFromJsonFile);
+
+
+function populateCategories () {
+  const categoryFilter = document.getElementById('categoryFilter');
+
+  //clear existing options except the 'all categories options'
+  categoryFilter.innerHTML =`<option value="all">All Categories</option>`
+
+  //get unique categories from the quotes array
+  const uniqueCategories = [...new Set(quotes.map(quote => quote.category))];
+
+  uniqueCategories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.appendChild(option);
+  }); 
+};
+
+function filterQuotes() {
+
+  quoteDisplay.innerHTML ='';
+  const selectedCategory = document.getElementById('categoryFilter').value;
+
+  const filteredQuotes = selectedCategory === 'all' ? quotes: quotes.filter(quote => quote.category === selectedCategory);
+
+  if (filteredQuotes.length > 0) {
+    let randomIndex = Math.floor(Math.random() * quotes.length);
+    const generatedQuote = filteredQuotes[randomIndex]; 
+    const displayedQuote = document.createElement('span');
+    displayedQuote.innerHTML = `"${generatedQuote.text}" - <em>${generatedQuote.category}</em>`;
+    quoteDisplay.appendChild(displayedQuote);
+  } else {
+    quoteDisplay.innerHTML = 'No quotes available for the selected category.';
+  }
+}
+
