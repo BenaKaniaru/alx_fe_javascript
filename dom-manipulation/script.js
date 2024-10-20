@@ -168,7 +168,7 @@ async function syncQuotes() {
     quotes = localQuotes;
 
     // Notify user and update UI
-    notifyUser('Quotes synchronized successfully with server.');
+    notifyUser('Quotes synced with server!');
     populateCategories();
 
     // Post local data back to server (if needed)
@@ -179,18 +179,6 @@ async function syncQuotes() {
 }
 
 // Notify users when data is synced
-function notifyUser(message) {
-  const notification = document.createElement('div');
-  notification.className = 'notification';
-  notification.textContent = message;
-
-  document.body.appendChild(notification);
-
-  setTimeout(() => {
-    notification.remove();
-  }, 5000);
-}
-
 function notifyUser(message) {
   const notification = document.createElement('div');
   notification.className = 'notification';
