@@ -169,6 +169,34 @@ function notifyUser(message) {
 }
 
 document.getElementById('syncData').addEventListener('click', fetchQuotesFromServer);
+// POST local data to the server
+async function postLocalQuotesToServer() {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(quotes)
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
+    }
+
+    const result = await response.json();
+    console.log('Data posted successfully:', result);
+    notifyUser("Local quotes sent to server successfully!");
+  } catch (error) {
+    console.error('Error posting quotes to server:', error);
+  }
+}
+
+// Periodically fetch data every 60 seconds
+setInterval(fetchQuotesFromServer, 60000);
+
+// Export JSON and POST to server on button click
+document.getElementById('syncData').addEventListener('click', postLocalQuotesToServer);
 
 // Initial population of categories
 populateCategories();
