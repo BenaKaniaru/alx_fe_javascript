@@ -108,7 +108,7 @@ function filterQuotes() {
   }
 }
 
-// Simulate fetching quotes from server
+// Function to fetch quotes from the server
 async function fetchQuotesFromServer() {
   try {
     const response = await fetch('https://jsonplaceholder.typicode.com/posts');
@@ -119,57 +119,14 @@ async function fetchQuotesFromServer() {
       category: 'Fetched from Server'
     }));
 
-    syncWithServer(updatedQuotes);
+    return updatedQuotes;
   } catch (error) {
     console.error('Error fetching quotes from server:', error);
+    return [];
   }
 }
 
-// Periodically fetch data every 60 seconds
-setInterval(fetchQuotesFromServer, 60000);
-
-// Sync local data with server data and resolve conflicts
-function syncWithServer(serverQuotes) {
-  const localQuotes = JSON.parse(localStorage.getItem('quotes')) || [];
-
-  serverQuotes.forEach(serverQuote => {
-    const localIndex = localQuotes.findIndex(localQuote => localQuote.text === serverQuote.text);
-
-    if (localIndex > -1) {
-      const resolvedQuote = handleConflict(localQuotes[localIndex], serverQuote);
-      localQuotes[localIndex] = resolvedQuote; // Update with resolved quote
-    } else {
-      localQuotes.push(serverQuote); // Add new server quote
-    }
-  });
-
-  localStorage.setItem('quotes', JSON.stringify(localQuotes));
-  quotes = localQuotes; // Update local array
-  notifyUser("Data synced successfully with conflict resolution.");
-  populateCategories();
-}
-
-// Handle conflict between local and server data
-function handleConflict(localQuote, serverQuote) {
-  const userChoice = confirm(`Conflict detected for quote "${localQuote.text}". Do you want to keep the server version?`);
-  return userChoice ? serverQuote : localQuote;
-}
-
-// Notify users when data is synced
-function notifyUser(message) {
-  const notification = document.createElement('div');
-  notification.className = 'notification';
-  notification.textContent = message;
-
-  document.body.appendChild(notification);
-
-  setTimeout(() => {
-    notification.remove();
-  }, 5000);
-}
-
-document.getElementById('syncData').addEventListener('click', fetchQuotesFromServer);
-// POST local data to the server
+// Function to post local quotes to the server
 async function postLocalQuotesToServer() {
   try {
     const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
@@ -192,11 +149,52 @@ async function postLocalQuotesToServer() {
   }
 }
 
-// Periodically fetch data every 60 seconds
-setInterval(fetchQuotesFromServer, 60000);
+// Function to synchronize local quotes with server
+async function syncQuotes() {
+  try {
+    const serverQuotes = await fetchQuotesFromServer();
+    const localQuotes = JSON.parse(localStorage.getItem('quotes')) || [];
 
-// Export JSON and POST to server on button click
-document.getElementById('syncData').addEventListener('click', postLocalQuotesToServer);
+    // Merge server and local quotes
+    serverQuotes.forEach(serverQuote => {
+      const localIndex = localQuotes.findIndex(localQuote => localQuote.text === serverQuote.text);
+      if (localIndex === -1) {
+        localQuotes.push(serverQuote); // Add server quote if not found in local
+      }
+    });
+
+    // Update local storage with the merged data
+    localStorage.setItem('quotes', JSON.stringify(localQuotes));
+    quotes = localQuotes;
+
+    // Notify user and update UI
+    notifyUser('Quotes synchronized successfully with server.');
+    populateCategories();
+
+    // Post local data back to server (if needed)
+    await postLocalQuotesToServer();
+  } catch (error) {
+    console.error('Error during quote synchronization:', error);
+  }
+}
+
+// Notify users when data is synced
+function notifyUser(message) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.textContent = message;
+
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 5000);
+}
+
+document.getElementById('syncData').addEventListener('click', syncQuotes);
+
+// Periodically fetch data every 60 seconds
+setInterval(syncQuotes, 60000);
 
 // Initial population of categories
 populateCategories();
