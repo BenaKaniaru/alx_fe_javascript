@@ -191,6 +191,18 @@ function notifyUser(message) {
   }, 5000);
 }
 
+function notifyUser(message) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.textContent = message;
+
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 5000);
+}
+
 document.getElementById('syncData').addEventListener('click', syncQuotes);
 
 // Periodically fetch data every 60 seconds
